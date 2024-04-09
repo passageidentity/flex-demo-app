@@ -1,5 +1,5 @@
 {
-  "name": "flex-demo-app-server",
+  "name": "flex-demo-app-backend",
   "version": "0.1.0",
   "description": "Passage Passkey Flex backend Express app",
   "main": "dist/index.js",
