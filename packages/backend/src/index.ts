@@ -3,10 +3,10 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { usersRouter } from "./routes/users";
 
-dotenv.config();
+dotenv.config({ path: '../../../.env'});
 
 const app: Express = express();
-const port = process.env.PORT;
+const port = process.env.SERVER_PORT;
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server + Watching for changes');
