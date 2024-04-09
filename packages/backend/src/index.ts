@@ -6,7 +6,7 @@ import { usersRouter } from "./routes/users";
 dotenv.config({ path: '../../../.env'});
 
 const app: Express = express();
-const port = process.env.SERVER_PORT;
+const port = process.env.PASSAGE_SERVER_PORT;
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server + Watching for changes');
