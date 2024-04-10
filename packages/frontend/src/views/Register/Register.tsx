@@ -1,12 +1,14 @@
 import { FormEvent, ReactElement, useRef } from "react";
 import { serverURL } from "../../utils/serverURL";
+import { useNavigate } from "react-router-dom";
 
 export function Register(): ReactElement {
     const username = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
     const register = async (event: FormEvent) => {
         event.preventDefault();
-        await fetch(`${serverURL}/auth/password/login`, { 
+        const res = await fetch(`${serverURL}/auth/password/login`, { 
             method: 'POST', 
             headers: {
                 "Content-Type": "application/json",
@@ -14,6 +16,9 @@ export function Register(): ReactElement {
             credentials: 'include',
             body: JSON.stringify({username: username.current?.value, password: password.current?.value})
         });
+        if(res.ok){
+            navigate('/dashboard');
+        }
     }
     return (
         <form method="post" onSubmit={register} style={{display: 'flex', flexDirection: 'column'}}>

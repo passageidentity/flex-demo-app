@@ -97,7 +97,7 @@ passkeyRouter.post('/verify', async (req: Request, res: Response) => {
         },
         body: JSON.stringify(body),
     });
-    if (apiRes.status === 204) {
+    if (apiRes.status === 200) {
         (req.session as any).username = user.username;
         return res.status(200).send("OK").end();
     } else {
