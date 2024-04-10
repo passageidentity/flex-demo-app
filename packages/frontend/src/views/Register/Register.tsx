@@ -11,6 +11,7 @@ export function Register(): ReactElement {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: 'include',
             body: JSON.stringify({username: username.current?.value, password: password.current?.value})
         });
     }

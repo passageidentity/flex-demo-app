@@ -1,1 +1,1 @@
-export const serverURL = `http://localhost:${import.meta.env.PASSAGE_SERVER_PORT}`
+export const serverURL = `http://localhost:${import.meta.env.PASSAGE_SERVER_PORT}/api`

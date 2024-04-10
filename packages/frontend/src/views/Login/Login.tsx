@@ -11,7 +11,8 @@ export function Login(): ReactElement {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({username: username.current?.value, password: password.current?.value})
+            credentials: 'include',
+            body: JSON.stringify({username: username.current?.value, password: password.current?.value}),
         });
     }
     return (

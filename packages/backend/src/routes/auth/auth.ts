@@ -15,7 +15,6 @@ function checkUsernamePasswordPayload(req: Request) {
 }
 
 authRouter.post('/register/password', async (req: Request, res: Response) => {
-  console.log(req);
 	if(!checkUsernamePasswordPayload(req)){
     return res.status(400).send("Bad Request").end();
   }
@@ -32,6 +31,7 @@ authRouter.post('/register/password', async (req: Request, res: Response) => {
   } catch (err) {
     return res.status(500).send("Internal Server Error").end();
   }
+  (req.session as any).username = username;
   return res.status(200).send("OK").end();
 });
 
@@ -49,5 +49,6 @@ authRouter.post('/login/password', async (req: Request, res: Response) => {
   if(!crypto.timingSafeEqual(user.hashedPassword, hashedPassword)) {
     return res.status(401).send("Unauthorized").end();
   }
+  (req.session as any).username = username
   return res.status(200).send("OK").end();
 })
