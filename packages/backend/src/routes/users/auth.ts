@@ -15,6 +15,7 @@ function checkUsernamePasswordPayload(req: Request) {
 }
 
 authRouter.post('/register/password', async (req: Request, res: Response) => {
+  console.log(req);
 	if(!checkUsernamePasswordPayload(req)){
     return res.status(400).send("Bad Request").end();
   }
@@ -31,9 +32,22 @@ authRouter.post('/register/password', async (req: Request, res: Response) => {
   } catch (err) {
     return res.status(500).send("Internal Server Error").end();
   }
+  return res.status(200).send("OK").end();
 });
 
-authRouter.post('/login', async (req: Request, res: Response) => {
-  res.statusCode = 501;
-  res.send("Not Implemented");
+authRouter.post('/login/password', async (req: Request, res: Response) => {
+  if(!checkUsernamePasswordPayload(req)){
+    return res.status(400).send("Bad Request").end();
+  }
+  const username = req.body.username as string;
+	const password = req.body.password as string;
+  const user = await prisma.user.findUnique({where: {username: username}});
+  if(user === null){
+      return res.status(404).send("User does not exist").end();
+  }
+  const hashedPassword = crypto.pbkdf2Sync(password, user.salt, 1000, 64, 'sha512');
+  if(!crypto.timingSafeEqual(user.hashedPassword, hashedPassword)) {
+    return res.status(401).send("Unauthorized").end();
+  }
+  return res.status(200).send("OK").end();
 })

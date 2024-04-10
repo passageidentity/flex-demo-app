@@ -1,0 +1,1 @@
+export const serverURL = `http://localhost:${import.meta.env.PASSAGE_SERVER_PORT}`
