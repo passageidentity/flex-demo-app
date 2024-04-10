@@ -2,6 +2,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { usersRouter } from "./routes/users";
+import crypto from 'crypto';
 
 dotenv.config({ path: '../../../.env'});
 
@@ -20,5 +21,7 @@ async function main(){
     console.log(`[server]: Server is running at http://localhost:${port}`);
   });
 }
+
+const value = crypto.randomBytes(16);
 
 main();
