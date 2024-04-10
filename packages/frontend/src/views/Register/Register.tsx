@@ -6,7 +6,7 @@ export function Register(): ReactElement {
     const password = useRef<HTMLInputElement>(null);
     const register = async (event: FormEvent) => {
         event.preventDefault();
-        await fetch(`${serverURL}/auth/register/password`, { 
+        await fetch(`${serverURL}/auth/password/login`, { 
             method: 'POST', 
             headers: {
                 "Content-Type": "application/json",

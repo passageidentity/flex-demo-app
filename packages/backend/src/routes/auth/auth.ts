@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import crypto from 'crypto';
 import { PrismaClient } from "@prisma/client";
 
-export const authRouter = Router();
+export const passwordRouter = Router();
 const prisma = new PrismaClient();
 
 function checkUsernamePasswordPayload(req: Request) {
@@ -14,7 +14,8 @@ function checkUsernamePasswordPayload(req: Request) {
   return true;
 }
 
-authRouter.post('/register/password', async (req: Request, res: Response) => {
+
+passwordRouter.post('/register', async (req: Request, res: Response) => {
 	if(!checkUsernamePasswordPayload(req)){
     return res.status(400).send("Bad Request").end();
   }
@@ -35,7 +36,7 @@ authRouter.post('/register/password', async (req: Request, res: Response) => {
   return res.status(200).send("OK").end();
 });
 
-authRouter.post('/login/password', async (req: Request, res: Response) => {
+passwordRouter.post('/login', async (req: Request, res: Response) => {
   if(!checkUsernamePasswordPayload(req)){
     return res.status(400).send("Bad Request").end();
   }

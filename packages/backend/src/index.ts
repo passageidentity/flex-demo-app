@@ -1,7 +1,7 @@
 // src/index.ts
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
-import { authRouter } from "./routes/auth";
+import { passkeyRouter, passwordRouter } from "./routes/auth";
 import cors from 'cors';
 import bodyParser from "body-parser";
 import session from 'express-session';
@@ -37,8 +37,9 @@ app.use(session({
 }));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use('/api/auth', authRouter);
-app.use('/api/user', userRouter);
+app.use('/api/auth/password', passwordRouter);
+app.use('/api/auth/passkey', passkeyRouter);
+app.use('/api/auth/user', userRouter);
 
 // This code makes sure that any request that does not matches a static file
 // in the build folder, will just serve index.html. Client side routing is
