@@ -2,7 +2,7 @@
 CREATE TABLE "User" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "username" TEXT NOT NULL,
-    "hashedPassword" TEXT NOT NULL,
+    "hashedPassword" BLOB NOT NULL,
     "salt" BLOB NOT NULL,
     "passageExternalId" TEXT
 );

@@ -1,8 +1,7 @@
 // src/index.ts
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import { usersRouter } from "./routes/users";
-import crypto from 'crypto';
+import { authRouter } from "./routes/users";
 
 dotenv.config({ path: '../../../.env'});
 
@@ -13,7 +12,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server + Watching for changes');
 });
 
-app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 async function main(){
   console.log('starting server...')
@@ -21,7 +20,5 @@ async function main(){
     console.log(`[server]: Server is running at http://localhost:${port}`);
   });
 }
-
-const value = crypto.randomBytes(16);
 
 main();
