@@ -97,14 +97,12 @@ export function Login(): ReactElement {
         <>
             <CardHeader className="justify-center"><h2>Login with Passkey</h2></CardHeader>
             <CardBody>
-            <p className="max-w-64">
+            <p className="max-w-72">
                 Passkeys are a simple and more secure alternative to
                 passwords.
                 <br />
                 <br />
-                Log in with the method you already use to unlock your device.
-                <br/>
-                <a href="https://blog.1password.com/what-is-webauthn/" target="_blank" rel="noopener noreferrer"><u>Learn more →</u></a>
+                Log in with the method you already use to unlock your device. <a href="https://blog.1password.com/what-is-webauthn/" target="_blank" rel="noopener noreferrer"><u>Learn more →</u></a>
             </p>
             </CardBody>
             <CardFooter className="justify-center">
@@ -126,7 +124,7 @@ export function Login(): ReactElement {
     );
 
     return (
-        <Card className="min-w-72 max-w-2xl">
+        <Card className="min-w-80 max-w-2xl">
             {loginState === LoginState.Initial && initialState}
             {loginState === LoginState.Passkey && passkeyState}
             {loginState === LoginState.Password && passwordState}
