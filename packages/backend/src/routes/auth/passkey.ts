@@ -76,15 +76,7 @@ passkeyRouter.post('/login', async (req: Request, res: Response) => {
 });
 
 passkeyRouter.post('/verify', async (req: Request, res: Response) => {
-    if(!checkUsernamePayload(req)){
-        return res.status(400).send("Bad Request").end();
-    }
-    const username = req.body.username as string;
     const nonce = req.body.nonce as string;
-    const user = await prisma.user.findUnique({where: {username: username}});
-    if(user === null){
-        return res.status(404).send("User does not exist").end();
-    }
     const url = `${baseUrl}/authenticate/verify`;
     const body = {
         nonce,
@@ -98,6 +90,12 @@ passkeyRouter.post('/verify', async (req: Request, res: Response) => {
         body: JSON.stringify(body),
     });
     if (apiRes.status === 200) {
+        const resBody = await apiRes.json();
+        const externalId = resBody.external_id;
+        const user = await prisma.user.findUnique({where: {passageExternalId: externalId}});
+        if(user === null){
+            return res.status(404).send("User does not exist").end();
+        }
         (req.session as any).username = user.username;
         return res.status(200).send("OK").end();
     } else {

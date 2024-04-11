@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
 import { PassageFlex } from "@passageidentity/passage-flex-js";
 
