@@ -4,8 +4,8 @@ import { AddPasskey } from "../components/AddPasskey/AddPasskey";
 
 export function AddPasskeyView(): ReactElement {
     return (
-        <Card className="min-w-80 max-w-2xl">
-            <AddPasskey/>
-        </Card>
+            <Card className="min-w-80 max-w-2xl">
+                <AddPasskey/>
+            </Card>
     )
 }

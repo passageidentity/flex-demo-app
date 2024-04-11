@@ -3,6 +3,7 @@ import { serverURL } from "../../utils/serverURL";
 import { PassageFlex } from "@passageidentity/passage-flex-js";
 import { useNavigate } from "react-router-dom";
 import { Input, Button, Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
+import { AddPasskey } from "../../components/AddPasskey/AddPasskey";
 
 const passage = new PassageFlex(import.meta.env.PASSAGE_APP_ID);
 
@@ -18,6 +19,7 @@ export function Login(): ReactElement {
     const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
     const transactionID = useRef<string>('');
+    const skippedPasskey = useRef<boolean>(false);
 
     const [loginState, setLoginState] = useState<LoginState>(LoginState.Initial);
 
@@ -45,6 +47,10 @@ export function Login(): ReactElement {
             body: JSON.stringify({username: username, password: password}),
         });
         if(res.ok){
+            if(!skippedPasskey.current && await passage.passkey.canAuthenticateWithPasskey()){
+                setLoginState(LoginState.AddPasskey);
+                return;
+            }
             navigate('/dashboard')
         }
     }
@@ -72,6 +78,11 @@ export function Login(): ReactElement {
         } else {
             setLoginState(LoginState.Password);
         }
+    }
+
+    const usePassword = () =>{
+        skippedPasskey.current = true;
+        setLoginState(LoginState.Password);
     }
 
     useEffect(()=>{
@@ -105,8 +116,9 @@ export function Login(): ReactElement {
                 Log in with the method you already use to unlock your device. <a href="https://blog.1password.com/what-is-webauthn/" target="_blank" rel="noopener noreferrer"><u>Learn more →</u></a>
             </p>
             </CardBody>
-            <CardFooter className="justify-center">
+            <CardFooter className="justify-center gap-x-4">
                 <Button color="primary" size="lg" type="submit" onClick={loginWithPasskey}>Login</Button>
+                <Button variant="bordered" size="lg" onClick={usePassword}>Use Password</Button>
             </CardFooter>
         </>
     );
@@ -124,10 +136,11 @@ export function Login(): ReactElement {
     );
 
     return (
-        <Card className="min-w-80 max-w-2xl">
+        <Card className="min-w-80">
             {loginState === LoginState.Initial && initialState}
             {loginState === LoginState.Passkey && passkeyState}
             {loginState === LoginState.Password && passwordState}
+            {loginState === LoginState.AddPasskey && <AddPasskey/>}
         </Card>
     )
 }

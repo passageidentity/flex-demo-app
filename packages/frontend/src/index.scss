@@ -23,6 +23,11 @@ body {
   font-size: 14px;
 }
 
+#root {
+  width: 100%;
+  display: flex;
+}
+
 h1, h2, h3 {
   font-family: 'Manrope', sans-serif;
   font-weight: 700;

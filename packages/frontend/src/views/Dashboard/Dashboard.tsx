@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
 import { PassageFlex } from "@passageidentity/passage-flex-js";
+import { Input, Button, Card, CardHeader, CardBody } from "@nextui-org/react";
 
 interface IUser {
     username: string;
@@ -31,13 +32,25 @@ export function Dashboard(): ReactElement {
 
     const Authenticated = (
         <>
-            <p>Welcome {user?.username}</p>
-            <button onClick={addPasskey}>Add Passkey</button>
+            <CardHeader><h2> User Profile</h2></CardHeader>
+            <CardBody>
+                <Input
+                    isReadOnly
+                    type="username"
+                    label="Username"
+                    labelPlacement="outside-left"
+                    variant="bordered"
+                    defaultValue={user?.username}
+                />
+                <div className="flex justify-end mt-8">
+                    <Button size="sm" radius="md" color="primary" onClick={addPasskey}>Add Passkey</Button>
+                </div>
+            </CardBody>
         </>
     )
     return (
-        <div>
+        <Card className="min-w-80 w-3/5 max-w-xl">
             {user ? Authenticated : <p>Not logged in</p>}
-        </div>
+        </Card>
     )
 }
