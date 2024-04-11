@@ -29,6 +29,11 @@ export function Login(): ReactElement {
         setPassword(password);
     }
 
+    const enterUsername = (username: string) =>{ 
+        setError('');
+        setUsername(username);
+    }
+
     const getTransaction = async () => { 
         const res = await fetch(`${serverURL}/auth/passkey/login`, { 
             method: 'POST', 
@@ -40,6 +45,9 @@ export function Login(): ReactElement {
         if(res.ok){
             transactionID.current = (await res.json()).transaction_id;
         } else {
+            if(res.status === 404){
+                throw new Error('User does not exist');
+            }
             transactionID.current = '';
         }
     }
@@ -74,7 +82,7 @@ export function Login(): ReactElement {
             }
             navigate('/dashboard')
         } else {
-            setError('Invalid username or password');
+            setError('Invalid password');
         }
     }
     const loginWithPasskey = async () => {
@@ -97,7 +105,12 @@ export function Login(): ReactElement {
             setLoginState(LoginState.Password);
             return;
         }
-        await getTransaction();
+        try {
+            await getTransaction();
+        } catch {
+            setError('User does not exist');
+            return;
+        }
         if(transactionID.current !== ''){
             setLoginState(LoginState.Passkey);
         } else {
@@ -121,7 +134,7 @@ export function Login(): ReactElement {
         <>
             <CardHeader className="justify-center"><h2>Login</h2></CardHeader>
             <CardBody className="gap-y-4">
-                    <Input size="sm" label="Username" name="username" autoComplete="username webauthn" type="text" value={username} onValueChange={setUsername}/>
+                    <Input size="sm" label="Username" name="username" autoComplete="username webauthn" type="text" value={username} onValueChange={enterUsername} isInvalid={!!error} errorMessage={error}/>
             </CardBody>
             <CardFooter className="justify-center">
                 <Button color="primary" size="lg" type="submit" onClick={checkPasskey}>Continue</Button>

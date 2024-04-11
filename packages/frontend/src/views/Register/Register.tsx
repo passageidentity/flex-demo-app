@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
 import { useNavigate } from "react-router-dom";
-import { Input, Button, Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
+import { Input, Button, Card, CardHeader, CardBody, CardFooter, user } from "@nextui-org/react";
 import { PassageFlex } from "@passageidentity/passage-flex-js";
 import { AddPasskey } from "../../components/AddPasskey/AddPasskey";
 
@@ -16,6 +16,12 @@ export function Register(): ReactElement {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
+    const [error, setError] = useState<string>('');
+
+    const enterUsername = (username: string) =>{ 
+        setError('');
+        setUsername(username);
+    }
 
     const [registerState, setRegisterState] = useState<RegisterState>(RegisterState.Initial);
 
@@ -34,6 +40,8 @@ export function Register(): ReactElement {
                 return;
             }
             navigate('/dashboard');
+        } else {
+            setError('User already exists');
         }
     }
 
@@ -41,11 +49,11 @@ export function Register(): ReactElement {
         <>
             <CardHeader className="justify-center"><h2>Register</h2></CardHeader>
             <CardBody className="gap-y-4">
-                    <Input size="sm" label="Username" name="username" autoComplete="username webauthn" type="text" value={username} onValueChange={setUsername}/>
-                    <Input size="sm" label="Password" name="password" value={password} onValueChange={setPassword}/>
+                    <Input size="sm" label="Username" name="username" autoComplete="username webauthn" type="text" value={username} onValueChange={enterUsername} isInvalid={!!error}/>
+                    <Input size="sm" label="Password" name="password" type="password" value={password} onValueChange={setPassword} errorMessage={error}/>
             </CardBody>
             <CardFooter className="justify-center">
-                <Button color="primary" size="lg" type="submit" onClick={register}>Register</Button>
+                <Button color="primary" size="lg" onClick={register}>Register</Button>
             </CardFooter>
         </>
     );
