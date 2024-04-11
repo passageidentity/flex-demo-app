@@ -20,8 +20,29 @@ export function Login(): ReactElement {
     const navigate = useNavigate();
     const transactionID = useRef<string>('');
     const skippedPasskey = useRef<boolean>(false);
+    const [error, setError] = useState<string>('');
 
     const [loginState, setLoginState] = useState<LoginState>(LoginState.Initial);
+
+    const enterPassword = (password: string) =>{ 
+        setError('');
+        setPassword(password);
+    }
+
+    const getTransaction = async () => { 
+        const res = await fetch(`${serverURL}/auth/passkey/login`, { 
+            method: 'POST', 
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({username: username}),
+        });
+        if(res.ok){
+            transactionID.current = (await res.json()).transaction_id;
+        } else {
+            transactionID.current = '';
+        }
+    }
 
     const verifyNonce = async (nonce: string) => {
         const res = await fetch(`${serverURL}/auth/passkey/verify`, { 
@@ -52,12 +73,23 @@ export function Login(): ReactElement {
                 return;
             }
             navigate('/dashboard')
+        } else {
+            setError('Invalid username or password');
         }
     }
     const loginWithPasskey = async () => {
-        //@ts-ignore
-        const nonce = await passage.passkey.authenticate({transactionId: transactionID.current});
-        await verifyNonce(nonce);
+        setError('');
+        try {
+            if(transactionID.current === ''){
+                await getTransaction();
+            }
+            //@ts-ignore
+            const nonce = await passage.passkey.authenticate({transactionId: transactionID.current});
+            await verifyNonce(nonce);
+        } catch {
+            setError('Failed to login with passkey');
+            transactionID.current = '';
+        }
     }
 
     const checkPasskey = async () =>{
@@ -65,15 +97,8 @@ export function Login(): ReactElement {
             setLoginState(LoginState.Password);
             return;
         }
-        const res = await fetch(`${serverURL}/auth/passkey/login`, { 
-            method: 'POST', 
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({username: username}),
-        });
-        if(res.ok){
-            transactionID.current = (await res.json()).transaction_id;
+        await getTransaction();
+        if(transactionID.current !== ''){
             setLoginState(LoginState.Passkey);
         } else {
             setLoginState(LoginState.Password);
@@ -115,9 +140,10 @@ export function Login(): ReactElement {
                 <br />
                 Log in with the method you already use to unlock your device. <a href="https://blog.1password.com/what-is-webauthn/" target="_blank" rel="noopener noreferrer"><u>Learn more →</u></a>
             </p>
+            {!!error && <p className="text-danger mt-4">{error}</p>}
             </CardBody>
             <CardFooter className="justify-center gap-x-4">
-                <Button color="primary" size="lg" type="submit" onClick={loginWithPasskey}>Login</Button>
+                <Button color="primary" size="lg" type="submit" onClick={loginWithPasskey}>{error? 'Try again' : 'Login'}</Button>
                 <Button variant="bordered" size="lg" onClick={usePassword}>Use Password</Button>
             </CardFooter>
         </>
@@ -127,7 +153,7 @@ export function Login(): ReactElement {
         <>
             <CardHeader className="justify-center"><h2>Login with Password</h2></CardHeader>
             <CardBody className="gap-y-4">
-                    <Input size="sm" label="Password" name="password" value={password} onValueChange={setPassword}/>
+                    <Input size="sm" label="Password" name="password" type="password" value={password} onValueChange={enterPassword} isInvalid={!!error} errorMessage={error}/>
             </CardBody>
             <CardFooter className="justify-center">
                 <Button color="primary" size="lg" type="submit" onClick={loginWithPassword}>Login</Button>
