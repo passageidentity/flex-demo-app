@@ -135,8 +135,9 @@ export function Login(): ReactElement {
             <CardBody className="gap-y-4">
                     <Input size="sm" label="Username" name="username" autoComplete="username webauthn" type="text" value={username} onValueChange={enterUsername} isInvalid={!!error} errorMessage={error}/>
             </CardBody>
-            <CardFooter className="justify-center">
+            <CardFooter className="justify-center flex-col">
                 <Button color="primary" size="lg" type="submit" onClick={checkPasskey}>Continue</Button>
+                <div className="mt-4">Don't have an account? <a className="font-bold"href="/register"><u>Register here.</u></a></div>
             </CardFooter>
         </>
     );
