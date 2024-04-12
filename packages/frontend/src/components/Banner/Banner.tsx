@@ -45,7 +45,7 @@ export function Banner(props: IBannerProps){
     const Authenticated = (
         <>
             <Button variant="bordered" size="sm" radius="md" onClick={logout}>Logout</Button>
-            <Link to="/profile"><img src="/profile.svg" alt="Profile" className="w-8 h-8 cursor-pointer" onClick={()=>navigate('/profile')}/></Link>
+            <Link to="/profile"><img src="/profile.svg" alt="Profile" className="min-w-8 min-w-8" onClick={()=>navigate('/profile')}/></Link>
         </>
     );
 
