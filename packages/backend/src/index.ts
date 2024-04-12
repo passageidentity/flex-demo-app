@@ -45,7 +45,7 @@ app.use('/api/auth/user', userRouter);
 // in the build folder, will just serve index.html. Client side routing is
 // going to make sure that the correct content will be loaded.
 app.use((req, res, next) => {
-  if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
+  if (/(.ico|.js|.css|.jpg|.png|.map|.svg)$/i.test(req.path)) {
       next();
   } else {
       res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');

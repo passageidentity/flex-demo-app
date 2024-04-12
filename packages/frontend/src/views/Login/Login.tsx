@@ -1,14 +1,56 @@
-import { FormEvent, ReactElement, useEffect, useRef } from "react";
+import { FormEvent, ReactElement, useEffect, useRef, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
 import { PassageFlex } from "@passageidentity/passage-flex-js";
 import { useNavigate } from "react-router-dom";
+import { Input, Button, Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
+import { AddPasskey } from "../../components/AddPasskey/AddPasskey";
 
 const passage = new PassageFlex(import.meta.env.PASSAGE_APP_ID);
 
+enum LoginState {
+    Initial,
+    Password,
+    Passkey,
+    AddPasskey,
+}
+
 export function Login(): ReactElement {
-    const username = useRef<HTMLInputElement>(null);
-    const password = useRef<HTMLInputElement>(null);
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
+    const transactionID = useRef<string>('');
+    const skippedPasskey = useRef<boolean>(false);
+    const [error, setError] = useState<string>('');
+
+    const [loginState, setLoginState] = useState<LoginState>(LoginState.Initial);
+
+    const enterPassword = (password: string) =>{ 
+        setError('');
+        setPassword(password);
+    }
+
+    const enterUsername = (username: string) =>{ 
+        setError('');
+        setUsername(username);
+    }
+
+    const getTransaction = async () => { 
+        const res = await fetch(`${serverURL}/auth/passkey/login`, { 
+            method: 'POST', 
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({username: username}),
+        });
+        if(res.ok){
+            transactionID.current = (await res.json()).transaction_id;
+        } else {
+            if(res.status === 404){
+                throw new Error('User does not exist');
+            }
+            transactionID.current = '';
+        }
+    }
 
     const verifyNonce = async (nonce: string) => {
         const res = await fetch(`${serverURL}/auth/passkey/verify`, { 
@@ -17,13 +59,13 @@ export function Login(): ReactElement {
                 "Content-Type": "application/json",
             },
             credentials: 'include',
-            body: JSON.stringify({username: username.current?.value, nonce: nonce}),
+            body: JSON.stringify({nonce: nonce}),
         });
         if(res.ok){
             navigate('/dashboard')
         }
     }
-    const login = async (event: FormEvent) => {
+    const loginWithPassword = async (event: FormEvent) => {
         event.preventDefault();
         const res = await fetch(`${serverURL}/auth/password/login`, { 
             method: 'POST', 
@@ -31,40 +73,112 @@ export function Login(): ReactElement {
                 "Content-Type": "application/json",
             },
             credentials: 'include',
-            body: JSON.stringify({username: username.current?.value, password: password.current?.value}),
+            body: JSON.stringify({username: username, password: password}),
         });
         if(res.ok){
+            if(!skippedPasskey.current && await passage.passkey.canAuthenticateWithPasskey()){
+                setLoginState(LoginState.AddPasskey);
+                return;
+            }
             navigate('/dashboard')
+        } else {
+            setError('Invalid password');
         }
     }
     const loginWithPasskey = async () => {
-        const res = await fetch(`${serverURL}/auth/passkey/login`, { 
-            method: 'POST', 
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({username: username.current?.value}),
-        });
-        const resBody = await res.json();
-        const transactionID = resBody.transaction_id;
-        const nonce = await passage.passkey.authenticate({transactionId: transactionID});
-        await verifyNonce(nonce);
+        setError('');
+        try {
+            if(transactionID.current === ''){
+                await getTransaction();
+            }
+            //@ts-ignore
+            const nonce = await passage.passkey.authenticate({transactionId: transactionID.current});
+            await verifyNonce(nonce);
+        } catch {
+            setError('Failed to login with passkey');
+            transactionID.current = '';
+        }
+    }
+
+    const checkPasskey = async () =>{
+        if(!await passage.passkey.canAuthenticateWithPasskey()){
+            setLoginState(LoginState.Password);
+            return;
+        }
+        try {
+            await getTransaction();
+        } catch {
+            setError('User does not exist');
+            return;
+        }
+        if(transactionID.current !== ''){
+            setLoginState(LoginState.Passkey);
+        } else {
+            setLoginState(LoginState.Password);
+        }
+    }
+
+    const usePassword = () =>{
+        skippedPasskey.current = true;
+        setLoginState(LoginState.Password);
     }
 
     useEffect(()=>{
-        // @ts-ignore
-       passage.passkey.authenticate({isConditionalMediation: true}).then((nonce)=>{
+       passage.passkey.authenticate({isConditional: true}).then((nonce)=>{
             verifyNonce(nonce);
        })
     }, [])
-    return (
+
+    const initialState = (
         <>
-        <form method="post" onSubmit={login} style={{display: 'flex', flexDirection: 'column'}}>
-            <label>Username: <input name="username" autoComplete="username webauthn" placeholder="username" type="text" ref={username}/></label>
-            <label>Password: <input name="username" placeholder="username" type="password" ref={password}/></label>
-            <button type="submit">Login</button>
-        </form>
-        <button onClick={loginWithPasskey}>Login with Passkey</button>
+            <CardHeader className="justify-center"><h2>Login</h2></CardHeader>
+            <CardBody className="gap-y-4">
+                    <Input size="sm" label="Username" name="username" autoComplete="username webauthn" type="text" value={username} onValueChange={enterUsername} isInvalid={!!error} errorMessage={error}/>
+            </CardBody>
+            <CardFooter className="justify-center">
+                <Button color="primary" size="lg" type="submit" onClick={checkPasskey}>Continue</Button>
+            </CardFooter>
         </>
+    );
+
+    const passkeyState = (
+        <>
+            <CardHeader className="justify-center"><h2>Login with Passkey</h2></CardHeader>
+            <CardBody>
+            <p className="max-w-72">
+                Passkeys are a simple and more secure alternative to
+                passwords.
+                <br />
+                <br />
+                Log in with the method you already use to unlock your device. <a href="https://blog.1password.com/what-is-webauthn/" target="_blank" rel="noopener noreferrer"><u>Learn more →</u></a>
+            </p>
+            {!!error && <p className="text-danger mt-4">{error}</p>}
+            </CardBody>
+            <CardFooter className="justify-center gap-x-4">
+                <Button color="primary" size="lg" type="submit" onClick={loginWithPasskey}>{error? 'Try again' : 'Login'}</Button>
+                <Button variant="bordered" size="lg" onClick={usePassword}>Use Password</Button>
+            </CardFooter>
+        </>
+    );
+
+    const passwordState = (
+        <>
+            <CardHeader className="justify-center"><h2>Login with Password</h2></CardHeader>
+            <CardBody className="gap-y-4">
+                    <Input size="sm" label="Password" name="password" type="password" value={password} onValueChange={enterPassword} isInvalid={!!error} errorMessage={error}/>
+            </CardBody>
+            <CardFooter className="justify-center">
+                <Button color="primary" size="lg" type="submit" onClick={loginWithPassword}>Login</Button>
+            </CardFooter>
+        </>
+    );
+
+    return (
+        <Card className="min-w-80">
+            {loginState === LoginState.Initial && initialState}
+            {loginState === LoginState.Passkey && passkeyState}
+            {loginState === LoginState.Password && passwordState}
+            {loginState === LoginState.AddPasskey && <AddPasskey/>}
+        </Card>
     )
 }
