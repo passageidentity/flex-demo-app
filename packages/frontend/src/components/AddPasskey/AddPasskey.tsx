@@ -19,14 +19,14 @@ export function AddPasskey(): ReactElement {
         const transactionID = resBody.transactionId;
         try {
             await passage.passkey.register(transactionID);
-            navigate('/dashboard');
+            navigate('/profile');
         } catch {
             setError('Failed to add passkey');
         }
     }
 
     const skip = () =>{
-        navigate('/dashboard');
+        navigate('/profile');
     }
 
     return (

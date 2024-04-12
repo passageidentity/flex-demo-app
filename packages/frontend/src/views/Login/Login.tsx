@@ -62,7 +62,7 @@ export function Login(): ReactElement {
             body: JSON.stringify({nonce: nonce}),
         });
         if(res.ok){
-            navigate('/dashboard')
+            navigate('/profile')
         }
     }
     const loginWithPassword = async (event: FormEvent) => {
@@ -80,7 +80,7 @@ export function Login(): ReactElement {
                 setLoginState(LoginState.AddPasskey);
                 return;
             }
-            navigate('/dashboard')
+            navigate('/profile')
         } else {
             setError('Invalid password');
         }
