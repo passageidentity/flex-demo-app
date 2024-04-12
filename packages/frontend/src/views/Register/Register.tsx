@@ -1,6 +1,6 @@
 import { ReactElement, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input, Button, Card, CardHeader, CardBody, CardFooter, user } from "@nextui-org/react";
 import { PassageFlex } from "@passageidentity/passage-flex-js";
 import { AddPasskey } from "../../components/AddPasskey/AddPasskey";
@@ -39,7 +39,7 @@ export function Register(): ReactElement {
                 setRegisterState(RegisterState.AddPasskey);
                 return;
             }
-            navigate('/dashboard');
+            navigate('/profile');
         } else {
             setError('User already exists');
         }
@@ -54,12 +54,12 @@ export function Register(): ReactElement {
             </CardBody>
             <CardFooter className="justify-center flex-col">
                 <Button color="primary" size="lg" onClick={register}>Register</Button>
-                <div className="mt-4">Already have an account? <a className="font-bold"href="/login"><u>Login here.</u></a></div>
+                <div className="mt-8">Already have an account? <Link className="font-bold"to="/login"><u>Login here.</u></Link></div>
             </CardFooter>
         </>
     );
     return (
-        <Card className="min-w-80">
+        <Card className="min-w-80 p-4">
             {registerState === RegisterState.Initial && initialState}
             {registerState === RegisterState.AddPasskey && <AddPasskey/>}
         </Card>
