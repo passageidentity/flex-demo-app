@@ -124,8 +124,7 @@ export function Login(): ReactElement {
     }
 
     useEffect(()=>{
-        // @ts-ignore
-       passage.passkey.authenticate({isConditionalMediation: true}).then((nonce)=>{
+       passage.passkey.authenticate({isConditional: true}).then((nonce)=>{
             verifyNonce(nonce);
        })
     }, [])
