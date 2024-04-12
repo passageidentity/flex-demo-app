@@ -52,8 +52,9 @@ export function Register(): ReactElement {
                     <Input size="sm" label="Username" name="username" autoComplete="username webauthn" type="text" value={username} onValueChange={enterUsername} isInvalid={!!error}/>
                     <Input size="sm" label="Password" name="password" type="password" value={password} onValueChange={setPassword} errorMessage={error}/>
             </CardBody>
-            <CardFooter className="justify-center">
+            <CardFooter className="justify-center flex-col">
                 <Button color="primary" size="lg" onClick={register}>Register</Button>
+                <div className="mt-4">Already have an account? <a className="font-bold"href="/login"><u>Login here.</u></a></div>
             </CardFooter>
         </>
     );
