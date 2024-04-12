@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { PrismaClient } from "@prisma/client";
 
 export const passwordRouter = Router();
+
 const prisma = new PrismaClient();
 
 function checkUsernamePasswordPayload(req: Request) {

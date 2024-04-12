@@ -43,7 +43,7 @@ export function Login(): ReactElement {
             body: JSON.stringify({username: username}),
         });
         if(res.ok){
-            transactionID.current = (await res.json()).transaction_id;
+            transactionID.current = (await res.json()).transactionId;
         } else {
             if(res.status === 404){
                 throw new Error('User does not exist');
