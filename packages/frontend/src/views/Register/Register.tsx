@@ -12,7 +12,12 @@ enum RegisterState {
     AddPasskey
 }
 
-export function Register(): ReactElement {
+interface IRegisterProps {
+    onRegister: () => Promise<void>;
+}
+
+
+export function Register(props: IRegisterProps): ReactElement {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
@@ -35,6 +40,7 @@ export function Register(): ReactElement {
             body: JSON.stringify({username: username, password: password})
         });
         if(res.ok){
+            await props.onRegister();
             if(await passage.passkey.canRegisterPasskey()){
                 setRegisterState(RegisterState.AddPasskey);
                 return;

@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
 import { useNavigate, Link } from "react-router-dom";
 
-export function Banner(){
+interface IBannerProps {
+    refresh: number;
+}
+
+export function Banner(props: IBannerProps){
     const navigate = useNavigate();
     const [authenticated, setAuthenticated] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
@@ -24,7 +28,7 @@ export function Banner(){
 
     useEffect(()=>{
         checkUser();
-    }, []);
+    }, [props.refresh]);
 
     const logout = async () =>{
         await fetch(`${serverURL}/auth/user/logout`, { 

@@ -14,7 +14,11 @@ enum LoginState {
     AddPasskey,
 }
 
-export function Login(): ReactElement {
+interface ILoginProps {
+    onLogin: () => Promise<void>;
+}
+
+export function Login(props: ILoginProps): ReactElement {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
@@ -62,6 +66,7 @@ export function Login(): ReactElement {
             body: JSON.stringify({nonce: nonce}),
         });
         if(res.ok){
+            await props.onLogin();
             navigate('/profile')
         }
     }
@@ -80,6 +85,7 @@ export function Login(): ReactElement {
                 setLoginState(LoginState.AddPasskey);
                 return;
             }
+            await props.onLogin();
             navigate('/profile')
         } else {
             setError('Invalid password');
