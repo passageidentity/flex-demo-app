@@ -65,7 +65,7 @@ export function Register(props: IRegisterProps): ReactElement {
         </>
     );
     return (
-        <Card className="min-w-80 p-4">
+        <Card className="sm:min-w-80 p-4">
             {registerState === RegisterState.Initial && initialState}
             {registerState === RegisterState.AddPasskey && <AddPasskey/>}
         </Card>

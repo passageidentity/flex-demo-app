@@ -108,7 +108,7 @@ export function Dashboard(): ReactElement {
         </>
     )
     return (
-        <Card className="min-w-80 w-3/5 max-w-xl p-4">
+        <Card className="w-full mx-4 max-w-xl p-4">
             <CardHeader><h2> User Profile</h2></CardHeader>
             {loading && Loading}
             {!loading && !user && Unauthenticated}

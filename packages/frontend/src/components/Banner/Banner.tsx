@@ -57,14 +57,14 @@ export function Banner(props: IBannerProps){
     );
     
     return (
-        <div className="w-full bg-slate-100 py-4 px-12 grid gap-4 grid-cols-4">
-            <div className="flex gap-x-4 items-center">
+        <div className="w-full bg-slate-100 py-4 px-12 flex justify-between sm:grid gap-4 sm:grid-cols-4">
+            <div className="hidden sm:flex gap-x-4 items-center">
                 <Link to="/">Buy</Link>
                 <Link to="/">Sell</Link>
                 <Link to="/">Rent</Link>
             </div>
-            <div className="flex justify-center col-span-2">
-                <Link to="/"><img src="/home-search.svg" alt="Home Search Logo" className="w-64"/></Link>
+            <div className="flex justify-center items-center col-span-2">
+                <Link to="/"><img src="/home-search.svg" alt="Home Search Logo" className="w-64 min-w-32"/></Link>
             </div>
             <div className="flex gap-x-4 justify-end items-center">
                 {!loading && (authenticated ? Authenticated : Unauthenticated)}

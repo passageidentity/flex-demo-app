@@ -181,7 +181,7 @@ export function Login(props: ILoginProps): ReactElement {
     );
 
     return (
-        <Card className="min-w-80 p-4">
+        <Card className="sm:min-w-80 p-4 mx-4">
             {loginState === LoginState.Initial && initialState}
             {loginState === LoginState.Passkey && passkeyState}
             {loginState === LoginState.Password && passwordState}
