@@ -19,14 +19,14 @@ export function AddPasskey(): ReactElement {
         const transactionID = resBody.transactionId;
         try {
             await passage.passkey.register(transactionID);
-            navigate('/dashboard');
+            navigate('/profile');
         } catch {
             setError('Failed to add passkey');
         }
     }
 
     const skip = () =>{
-        navigate('/dashboard');
+        navigate('/profile');
     }
 
     return (
@@ -42,7 +42,7 @@ export function AddPasskey(): ReactElement {
                     </p>
                     {!!error && <p className="text-danger mt-4">{error}</p>}
                 </CardBody>
-                <CardFooter className="justify-center gap-x-4">
+                <CardFooter className="justify-center gap-x-4 mt-4">
                     <Button color="primary" size="lg"  onClick={addPasskey}>Add Passkey</Button>
                     <Button variant="bordered" size="lg" onClick={skip}>Skip</Button>
             </CardFooter>

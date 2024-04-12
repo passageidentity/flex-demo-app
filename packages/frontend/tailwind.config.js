@@ -25,6 +25,16 @@ export default {
         large: "2px", // border-large
       },
     },
+    /*themes: {
+      light: {
+        colors: {
+          primary: {
+            DEFAULT: "#41529F",
+            foreground: "#ffffff",
+          },
+        },
+      },
+    },*/
   })],
 }
 

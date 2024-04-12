@@ -46,3 +46,9 @@ userRouter.post('/revokePasskey', async (req: Request, res: Response) => {
         return res.status(500).send("Internal Server Error").end();
     }
 });
+
+userRouter.post('/logout', async (req: Request, res: Response) => {
+    req.session.destroy(() => {
+        res.status(200).send('OK').end();
+    });
+});

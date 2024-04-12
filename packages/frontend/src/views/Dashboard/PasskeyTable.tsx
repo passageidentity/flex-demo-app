@@ -42,7 +42,7 @@ function TimeRenderer(props: {date: Date}): ReactElement {
 }
 
 function RevokePasskey(props: {passkey: WebAuthnDevice, revoke: (passkey: WebAuthnDevice)=>Promise<void>}): ReactElement {
-    return <button onClick={() => props.revoke(props.passkey)}><img src="/close.svg" alt="revoke passkey" className="w-3 h-3"/></button>
+    return <button onClick={() => props.revoke(props.passkey)}><img src="/close.svg" alt="revoke passkey" className="min-w-3 min-h-3"/></button>
 }
 
 export function PasskeyTable(props: IPasskeyTableProps): ReactElement {
