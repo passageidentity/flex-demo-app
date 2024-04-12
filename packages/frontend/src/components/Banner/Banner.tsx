@@ -1,4 +1,4 @@
-import { Button, LinkIcon } from "@nextui-org/react"
+import { Button } from "@nextui-org/react"
 import { useEffect, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
 import { useNavigate, Link } from "react-router-dom";
@@ -12,6 +12,8 @@ export function Banner(){
         fetch(`${serverURL}/auth/user`).then(async (response) => {
             if (response.ok) {
                 setAuthenticated(true);
+            } else {
+                setAuthenticated(false);
             }
         }).catch(() => {
             setAuthenticated(false);
@@ -24,9 +26,21 @@ export function Banner(){
         checkUser();
     }, []);
 
+    const logout = async () =>{
+        await fetch(`${serverURL}/auth/user/logout`, { 
+            method: 'POST', 
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include',
+        });
+        await checkUser();
+        navigate('/login');
+    }
+
     const Authenticated = (
         <>
-            <Button variant="bordered" size="sm" radius="md">Logout</Button>
+            <Button variant="bordered" size="sm" radius="md" onClick={logout}>Logout</Button>
             <Link to="/profile"><img src="/profile.svg" alt="Profile" className="w-8 h-8 cursor-pointer" onClick={()=>navigate('/profile')}/></Link>
         </>
     );

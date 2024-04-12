@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
 import { PassageFlex } from "@passageidentity/passage-flex-js";
-import { Input, Button, Card, CardHeader, CardBody, Skeleton } from "@nextui-org/react";
+import { Input, Button, Card, CardHeader, CardBody, CardFooter, Skeleton } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { WebAuthnDevice } from "./types";
 import { PasskeyTable } from "./PasskeyTable";
@@ -77,7 +77,9 @@ export function Dashboard(): ReactElement {
         <>
             <CardBody>
                 <p> You are not currently logged in. Please go to login.</p>
-                <Button size="lg" color="primary" onClick={()=>navigate('/login')}>Login</Button>
+                <CardFooter className="justify-center">
+                    <Button size="lg" color="primary" onClick={()=>navigate('/login')}>Login</Button>
+                </CardFooter>
             </CardBody>
         </>
     );
