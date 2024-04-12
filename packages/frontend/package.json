@@ -12,6 +12,7 @@
   "dependencies": {
     "@nextui-org/react": "^2.2.10",
     "@passageidentity/passage-flex-js": "^0.1.2",
+    "dayjs": "^1.11.10",
     "framer-motion": "^11.0.28",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
