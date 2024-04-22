@@ -130,7 +130,7 @@ export function Login(props: ILoginProps): ReactElement {
     }
 
     useEffect(()=>{
-       passage.passkey.authenticate({isConditional: true}).then((nonce)=>{
+       passage.passkey.authenticate({isConditionalMediation: true}).then((nonce)=>{
             verifyNonce(nonce);
        })
     }, [])
