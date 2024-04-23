@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react";
 import { serverURL } from "../../utils/serverURL";
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Button, Card, CardHeader, CardBody, CardFooter, user } from "@nextui-org/react";
+import { Input, Button, Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
 import { PassageFlex } from "@passageidentity/passage-flex-js";
 import { AddPasskey } from "../../components/AddPasskey/AddPasskey";
 
