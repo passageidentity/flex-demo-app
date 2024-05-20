@@ -28,12 +28,17 @@ interface ILoginProps {
 export function Login(props: ILoginProps): ReactElement {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [canAuthenticateWithPasskey, setCanAuthenticateWithPasskey] =
+    useState<boolean>(false);
   const navigate = useNavigate();
   const transactionID = useRef<string>("");
   const skippedPasskey = useRef<boolean>(false);
   const [error, setError] = useState<string>("");
 
   const [loginState, setLoginState] = useState<LoginState>(LoginState.Initial);
+
+  const isDisablePasskeyPrompt =
+    import.meta.env.PASSAGE_DISABLE_PASSKEY_PROMPT_AFTER_REGISTER === "true";
 
   const showLoginWithPassageButton =
     import.meta.env.PASSAGE_LOGIN_WITH_PASSKEY_BUTTON === "true";
@@ -96,6 +101,7 @@ export function Login(props: ILoginProps): ReactElement {
     if (res.ok) {
       if (
         !skippedPasskey.current &&
+        !isDisablePasskeyPrompt &&
         (await passage.passkey.canAuthenticateWithPasskey())
       ) {
         setLoginState(LoginState.AddPasskey);
@@ -122,6 +128,12 @@ export function Login(props: ILoginProps): ReactElement {
       setError("Failed to login with passkey");
       transactionID.current = "";
     }
+  };
+
+  const loginWithDiscoverable = async () => {
+    passage.passkey.authenticate().then((nonce) => {
+      verifyNonce(nonce);
+    });
   };
 
   const checkPasskey = async () => {
@@ -157,6 +169,15 @@ export function Login(props: ILoginProps): ReactElement {
     }
   }, []);
 
+  useEffect(() => {
+    const updateCanAuthenticateWithPasskey = async () => {
+      const canAuthenticate =
+        await passage.passkey.canAuthenticateWithPasskey();
+      setCanAuthenticateWithPasskey(canAuthenticate);
+    };
+    updateCanAuthenticateWithPasskey();
+  }, []);
+
   const initialState = (
     <>
       <CardHeader className="justify-center">
@@ -185,13 +206,13 @@ export function Login(props: ILoginProps): ReactElement {
           >
             Continue
           </Button>
-          {showLoginWithPassageButton && (
+          {showLoginWithPassageButton && canAuthenticateWithPasskey && (
             <Button
               className="ml-2"
               color="primary"
               size="lg"
               type="submit"
-              onClick={loginWithPasskey}
+              onClick={loginWithDiscoverable}
             >
               Login With Passkey
             </Button>
