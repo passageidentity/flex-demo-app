@@ -27,7 +27,7 @@ passkeyRouter.post('/add', async (req: Request, res: Response) => {
     if(user.passageExternalId === null){
        user = await prisma.user.update({where: {username: username}, data: {passageExternalId: username}});
     }
-    const transactionId = await passage.createRegisterTransaction({ externalId: user.passageExternalId!, passkeyDisplayName: user.username });
+    const transactionId = await passage.auth.createRegisterTransaction({ externalId: user.passageExternalId!, passkeyDisplayName: user.username });
     return res.status(200).json({transactionId: transactionId}).end();
 });
 
@@ -44,7 +44,7 @@ passkeyRouter.post('/login', async (req: Request, res: Response) => {
         return res.status(401).send("User has no passkeys").end();
     }
     try {
-        const transactionId = await passage.createAuthenticateTransaction({ externalId: user.passageExternalId! });
+        const transactionId = await passage.auth.createAuthenticateTransaction(user.passageExternalId!);
         return res.status(200).json({transactionId: transactionId}).end();
     } catch {
         return res.status(401).send("User has no passkeys").end();
@@ -57,7 +57,7 @@ passkeyRouter.post('/verify', async (req: Request, res: Response) => {
         return res.status(400).send("Bad Request").end();
     }
     try {
-        const externalId = await passage.verifyNonce(nonce);
+        const externalId = await passage.auth.verifyNonce(nonce);
         const user = await prisma.user.findUnique({where: {passageExternalId: externalId}});
         if(user === null){
             return res.status(404).send("User does not exist").end();
