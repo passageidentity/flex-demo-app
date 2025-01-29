@@ -27,7 +27,7 @@ passkeyRouter.post('/add', async (req: Request, res: Response) => {
     if(user.passageExternalId === null){
        user = await prisma.user.update({where: {username: username}, data: {passageExternalId: username}});
     }
-    const transactionId = await passage.auth.createRegisterTransaction({ externalId: user.passageExternalId!, passkeyDisplayName: user.username });
+    const transactionId = await passage.auth.createRegisterTransaction(user.passageExternalId!, user.username );
     return res.status(200).json({transactionId: transactionId}).end();
 });
 

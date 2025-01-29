@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "description": "Passage Passkey Flex backend Express app",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "setup": "npx prisma migrate dev --name init"
   },
   "author": "Passage Identity",
   "license": "ISC",
   "dependencies": {
-    "@passageidentity/passage-flex-node": "^0.2.1",
+    "@passageidentity/passage-flex-node": "^1.0.1",
     "@prisma/client": "^5.12.1",
     "@quixo3/prisma-session-store": "^3.1.13",
     "@types/express-session": "^1.18.0",
@@ -29,6 +30,7 @@
     "@types/node": "^20.11.5",
     "nodemon": "^3.0.3",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.3.3"
   }
 }

@@ -40,7 +40,7 @@ userRouter.post('/revokePasskey', async (req: Request, res: Response) => {
         return res.status(404).send("User has no passkeys.").end();
     }
     try {
-        await passage.user.revokeDevice({externalId: user.passageExternalId!, deviceId:id});
+        await passage.user.revokeDevice(user.passageExternalId!, id);
         return res.status(200).send('OK').end();
     } catch {
         return res.status(500).send("Internal Server Error").end();
