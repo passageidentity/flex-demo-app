@@ -10,10 +10,10 @@ import { userRouter } from "./routes/user";
 import { PrismaClient } from "@prisma/client";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import path from "path";
-import { fileURLToPath } from 'url';
+/*import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(__filename);*/
 
 dotenv.config({ path: '../../../.env'});
 
