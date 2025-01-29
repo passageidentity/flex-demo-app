@@ -18,7 +18,7 @@ userRouter.get('/', async (req: Request, res: Response) => {
     }
     let passkeys: WebAuthnDevices [] = [];
     if(user.passageExternalId !== null) {
-        passkeys = await passage.getDevices(user.passageExternalId!);
+        passkeys = await passage.user.listDevices(user.passageExternalId!);
     }
     return res.status(200).json({username, passkeys}).end();
 });
@@ -40,7 +40,7 @@ userRouter.post('/revokePasskey', async (req: Request, res: Response) => {
         return res.status(404).send("User has no passkeys.").end();
     }
     try {
-        await passage.revokeDevice(user.passageExternalId!, id);
+        await passage.user.revokeDevice(user.passageExternalId!, id);
         return res.status(200).send('OK').end();
     } catch {
         return res.status(500).send("Internal Server Error").end();
